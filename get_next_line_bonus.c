@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: llopes-n <llopes-n@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/20 16:06:23 by llopes-n          #+#    #+#             */
-/*   Updated: 2021/10/11 18:22:57 by llopes-n         ###   ########.fr       */
+/*   Updated: 2021/10/12 12:56:44 by llopes-n         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*read_acheck_bk(int fd, char *buffer, char *backup)
 {
@@ -62,18 +62,18 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	char		*buffer;
-	static char	*backup;
+	static char	*backup[OPEN_MAX + 1];
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 		return (NULL);
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
-	line = read_acheck_bk(fd, buffer, backup);
+	line = read_acheck_bk(fd, buffer, backup[fd]);
 	free(buffer);
 	buffer = NULL;
 	if (!line)
 		return (line);
-	backup = extract_format(line);
+	backup[fd] = extract_format(line);
 	return (line);
 }
